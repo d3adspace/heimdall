@@ -27,14 +27,14 @@ package de.d3adspace.heimdall.server;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public interface HeimdallServer {
-	
-	/**
-	 * Start the server.
-	 */
-	void start();
-	
-	/**
-	 * Stop the server.
-	 */
-	void stop();
+
+    /**
+     * Start the server.
+     */
+    void start();
+
+    /**
+     * Stop the server.
+     */
+    void stop();
 }

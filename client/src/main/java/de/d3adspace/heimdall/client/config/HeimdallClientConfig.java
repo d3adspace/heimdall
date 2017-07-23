@@ -27,43 +27,43 @@ package de.d3adspace.heimdall.client.config;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class HeimdallClientConfig {
-	
-	/**
-	 * The host of the server.
-	 */
-	private final String serverHost;
-	
-	/**
-	 * The port of the server.
-	 */
-	private final int serverPort;
-	
-	/**
-	 * Create a new config.
-	 *
-	 * @param serverHost The server host.
-	 * @param serverPort The server port.
-	 */
-	HeimdallClientConfig(String serverHost, int serverPort) {
-		this.serverHost = serverHost;
-		this.serverPort = serverPort;
-	}
-	
-	/**
-	 * Get the server port.
-	 *
-	 * @return The server port.
-	 */
-	public int getServerPort() {
-		return serverPort;
-	}
-	
-	/**
-	 * Get the server host.
-	 *
-	 * @return The server host.
-	 */
-	public String getServerHost() {
-		return serverHost;
-	}
+
+    /**
+     * The host of the server.
+     */
+    private final String serverHost;
+
+    /**
+     * The port of the server.
+     */
+    private final int serverPort;
+
+    /**
+     * Create a new config.
+     *
+     * @param serverHost The server host.
+     * @param serverPort The server port.
+     */
+    HeimdallClientConfig(String serverHost, int serverPort) {
+        this.serverHost = serverHost;
+        this.serverPort = serverPort;
+    }
+
+    /**
+     * Get the server port.
+     *
+     * @return The server port.
+     */
+    public int getServerPort() {
+        return serverPort;
+    }
+
+    /**
+     * Get the server host.
+     *
+     * @return The server host.
+     */
+    public String getServerHost() {
+        return serverHost;
+    }
 }

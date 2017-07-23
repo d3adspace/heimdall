@@ -21,6 +21,7 @@
 
 package de.d3adspace.heimdall.client;
 
+import de.d3adspace.hawkings.Hawkings;
 import de.d3adspace.heimdall.client.config.HeimdallClientConfig;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import de.d3adspace.heimdall.client.handler.SubscriptionHandler;
@@ -41,108 +42,140 @@ import org.slf4j.LoggerFactory;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class SimpleHeimdallClient implements HeimdallClient {
-	
-	/**
-	 * The configuration for the client.
-	 */
-	private final HeimdallClientConfig config;
-	
-	/**
-	 * The subscription handler.
-	 */
-	private final SubscriptionHandler subscriptionHandler;
-	
-	/**
-	 * The Logger for the client.
-	 */
-	private final Logger logger;
-	
-	/**
-	 * Netty worker.
-	 */
-	private EventLoopGroup workerGroup;
-	
-	/**
-	 * The connection channel to the server.
-	 */
-	private Channel channel;
-	
-	/**
-	 * Create a client by the config.
-	 *
-	 * @param config The config.
-	 */
-	SimpleHeimdallClient(HeimdallClientConfig config) {
-		this.config = config;
-		this.subscriptionHandler = new SubscriptionHandler(this);
-		this.logger = LoggerFactory.getLogger(SimpleHeimdallClient.class);
-	}
-	
-	@Override
-	public void connect() {
-		this.workerGroup = NettyUtils.createEventLoopGroup(4);
+
+    /**
+     * The configuration for the client.
+     */
+    private final HeimdallClientConfig config;
+
+    /**
+     * The subscription handler.
+     */
+    private final SubscriptionHandler subscriptionHandler;
+
+    /**
+     * The Logger for the client.
+     */
+    private final Logger logger;
+
+    /**
+     * The hawkings instance to manager consumers.
+     */
+    private final Hawkings<JSONObject> hawkings;
+
+    /**
+     * Netty worker.
+     */
+    private EventLoopGroup workerGroup;
+
+    /**
+     * The connection channel to the server.
+     */
+    private Channel channel;
+
+    /**
+     * Create a client by the config.
+     *
+     * @param config The config.
+     */
+    SimpleHeimdallClient(HeimdallClientConfig config) {
+        this.config = config;
+        this.subscriptionHandler = new SubscriptionHandler(this);
+        this.logger = LoggerFactory.getLogger(SimpleHeimdallClient.class);
+        this.hawkings = new Hawkings<>();
+    }
+
+    @Override
+    public void connect() {
+        this.workerGroup = NettyUtils.createEventLoopGroup(4);
+
+        Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
+
+        this.logger.info("Connecting to server {}:{}", this.config.getServerHost(),
+                this.config.getServerPort());
+
+        Bootstrap bootstrap = new Bootstrap();
+
+        try {
+            channel = bootstrap
+                    .group(this.workerGroup)
+                    .channel(clientChannelClazz)
+                    .handler(new ClientChannelInitializer(this))
+                    .option(ChannelOption.TCP_NODELAY, true)
+                    .connect(this.config.getServerHost(), this.config.getServerPort())
+                    .sync().channel();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.logger.info("Connected to server {}:{}", this.config.getServerHost(),
+                this.config.getServerPort());
+    }
+
+    @Override
+    public void disconnect() {
+        this.subscriptionHandler.unregisterPacketHandlers();
+
+        this.channel.close();
+
+        this.workerGroup.shutdownGracefully();
+    }
+
+    @Override
+    public void subscribe(PacketHandler packetHandler) {
+        this.subscriptionHandler.registerPacketHandler(packetHandler);
+    }
+
+    @Override
+    public void unsubscribe(PacketHandler packetHandler) {
+        this.subscriptionHandler.unregisterPacketHandler(packetHandler);
+    }
+
+    @Override
+    public void publish(String channelName, JSONObject jsonObject) {
+        jsonObject.put("channelName", channelName);
+
+        if (!jsonObject.has("actionId")) {
+            jsonObject.put("actionId", Action.BROADCAST.getActionId());
+        }
+
+        this.channel.writeAndFlush(jsonObject);
+    }
+
+    /**
+     * Get the hawkings instance.
+     *
+     * @return The hawkings.
+     */
+    public Hawkings<JSONObject> getHawkings() {
+        return hawkings;
+    }
+
+	/*@Override
+	public void request(String channelName, JSONObject jsonObject, Consumer<JSONObject> response) {
+		int consumerId = this.hawkings.incrementAndGetId();
+		this.hawkings.registerConsumer(response);
 		
-		Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
+		jsonObject.put("actionId", Action.REQUEST.getActionId());
+		jsonObject.put("consumerId", consumerId);
 		
-		this.logger.info("Connecting to server {}:{}", this.config.getServerHost(),
-			this.config.getServerPort());
+		this.publish(channelName, jsonObject);
+	}*/
+
+    /**
+     * Delegate a packet to the belonging handler.
+     *
+     * @param jsonObject The object
+     */
+    public void handlePacket(JSONObject jsonObject) {
+        String channelName = (String) jsonObject.remove("channelName");
 		
-		Bootstrap bootstrap = new Bootstrap();
-		
-		try {
-			channel = bootstrap
-				.group(this.workerGroup)
-				.channel(clientChannelClazz)
-				.handler(new ClientChannelInitializer(this))
-				.option(ChannelOption.TCP_NODELAY, true)
-				.connect(this.config.getServerHost(), this.config.getServerPort())
-				.sync().channel();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		this.logger.info("Connected to server {}:{}", this.config.getServerHost(),
-			this.config.getServerPort());
-	}
-	
-	@Override
-	public void disconnect() {
-		this.subscriptionHandler.unregisterPacketHandlers();
-		
-		this.channel.close();
-		
-		this.workerGroup.shutdownGracefully();
-	}
-	
-	@Override
-	public void subscribe(PacketHandler packetHandler) {
-		this.subscriptionHandler.registerPacketHandler(packetHandler);
-	}
-	
-	@Override
-	public void unsubscribe(PacketHandler packetHandler) {
-		this.subscriptionHandler.unregisterPacketHandler(packetHandler);
-	}
-	
-	@Override
-	public void publish(String channelName, JSONObject jsonObject) {
-		jsonObject.put("channelName", channelName);
-		
-		if (!jsonObject.has("actionId")) {
-			jsonObject.put("actionId", Action.BROADCAST.getActionId());
-		}
-		
-		this.channel.writeAndFlush(jsonObject);
-	}
-	
-	/**
-	 * Delegate a packet to the belonging handler.
-	 *
-	 * @param jsonObject The object
-	 */
-	public void handlePacket(JSONObject jsonObject) {
-		String channelName = (String) jsonObject.remove("channelName");
-		
-		this.subscriptionHandler.handlePacket(channelName, jsonObject);
-	}
+		/*if (jsonObject.has("consumerId")) {
+			int consumerId = jsonObject.getInt("consumerId");
+			this.hawkings.invokeConsumer(consumerId, jsonObject);
+			return;
+		}*/
+
+        this.subscriptionHandler.handlePacket(channelName, jsonObject);
+    }
 }

@@ -29,11 +29,11 @@ import org.json.JSONObject;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public interface PacketHandler {
-	
-	/**
-	 * Handle an incoming packet.
-	 *
-	 * @param jsonObject The object.
-	 */
-	void handlePacket(JSONObject jsonObject);
+
+    /**
+     * Handle an incoming packet.
+     *
+     * @param jsonObject The object.
+     */
+    void handlePacket(JSONObject jsonObject);
 }

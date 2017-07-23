@@ -24,69 +24,70 @@ package de.d3adspace.heimdall.server.handler;
 import de.d3adspace.heimdall.commons.action.Action;
 import de.d3adspace.heimdall.server.connection.HeimdallConnection;
 import de.d3adspace.heimdall.server.subscription.SubscriptionContainer;
-import java.util.List;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class SimplePacketHandler implements PacketHandler {
-	
-	/**
-	 * Registry for all subscriptions.
-	 */
-	private final SubscriptionContainer subscriptionContainer;
-	
-	/**
-	 * Create a new handler based on a container of subscriptions.
-	 *
-	 * @param subscriptionContainer The subscription container.
-	 */
-	SimplePacketHandler(SubscriptionContainer subscriptionContainer) {
-		this.subscriptionContainer = subscriptionContainer;
-	}
-	
-	@Override
-	public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
-		int actionId = (int) jsonObject.remove("actionId");
-		Action action = Action.getAction(actionId);
-		
-		this.handleAction(connection, jsonObject, action);
-	}
-	
-	/**
-	 * Handle an action internal.
-	 *
-	 * @param connection The connection.
-	 * @param jsonObject The packet to handle.
-	 * @param action The action to handle.
-	 */
-	private void handleAction(HeimdallConnection connection, JSONObject jsonObject, Action action) {
-		if (action == Action.SUBSCRIBE) {
-			String channelName = (String) jsonObject.remove("channelName");
-			
-			this.subscriptionContainer.addSubscription(channelName, connection);
-		} else if (action == Action.UNSUBSCRIBE) {
-			String channelName = (String) jsonObject.remove("channelName");
-			
-			this.subscriptionContainer.removeSubscription(channelName, connection);
-		} else if (action == Action.BROADCAST) {
-			String channelName = jsonObject.getString("channelName");
-			
-			List<HeimdallConnection> subscribers = this.subscriptionContainer
-				.getSubscribers(channelName);
-			
-			if (subscribers == null) {
-				return;
-			}
-			
-			for (HeimdallConnection subscriber : subscribers) {
-				if (subscriber == connection) {
-					continue;
-				}
-				
-				subscriber.sendPacket(jsonObject);
-			}
-		}
-	}
+
+    /**
+     * Registry for all subscriptions.
+     */
+    private final SubscriptionContainer subscriptionContainer;
+
+    /**
+     * Create a new handler based on a container of subscriptions.
+     *
+     * @param subscriptionContainer The subscription container.
+     */
+    SimplePacketHandler(SubscriptionContainer subscriptionContainer) {
+        this.subscriptionContainer = subscriptionContainer;
+    }
+
+    @Override
+    public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
+        int actionId = (int) jsonObject.remove("actionId");
+        Action action = Action.getAction(actionId);
+
+        this.handleAction(connection, jsonObject, action);
+    }
+
+    /**
+     * Handle an action internal.
+     *
+     * @param connection The connection.
+     * @param jsonObject The packet to handle.
+     * @param action     The action to handle.
+     */
+    private void handleAction(HeimdallConnection connection, JSONObject jsonObject, Action action) {
+        if (action == Action.SUBSCRIBE) {
+            String channelName = (String) jsonObject.remove("channelName");
+
+            this.subscriptionContainer.addSubscription(channelName, connection);
+        } else if (action == Action.UNSUBSCRIBE) {
+            String channelName = (String) jsonObject.remove("channelName");
+
+            this.subscriptionContainer.removeSubscription(channelName, connection);
+        } else if (action == Action.BROADCAST) {
+            String channelName = jsonObject.getString("channelName");
+
+            List<HeimdallConnection> subscribers = this.subscriptionContainer
+                    .getSubscribers(channelName);
+
+            if (subscribers == null) {
+                return;
+            }
+
+            for (HeimdallConnection subscriber : subscribers) {
+                if (subscriber == connection) {
+                    continue;
+                }
+
+                subscriber.sendPacket(jsonObject);
+            }
+        }
+    }
 }

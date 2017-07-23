@@ -25,5 +25,5 @@ package de.d3adspace.heimdall.commons;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class HeimdallCommons {
-	
+
 }

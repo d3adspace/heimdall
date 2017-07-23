@@ -29,15 +29,15 @@ import de.d3adspace.heimdall.server.subscription.SubscriptionContainer;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class PacketHandlerFactory {
-	
-	/**
-	 * Create a new packet handler.
-	 *
-	 * @return The packet handler.
-	 */
-	public static PacketHandler createPacketHandler() {
-		SubscriptionContainer subscriptionContainer = new SubscriptionContainer();
-		
-		return new SimplePacketHandler(subscriptionContainer);
-	}
+
+    /**
+     * Create a new packet handler.
+     *
+     * @return The packet handler.
+     */
+    public static PacketHandler createPacketHandler() {
+        SubscriptionContainer subscriptionContainer = new SubscriptionContainer();
+
+        return new SimplePacketHandler(subscriptionContainer);
+    }
 }

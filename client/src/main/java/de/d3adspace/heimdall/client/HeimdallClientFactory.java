@@ -29,15 +29,14 @@ import de.d3adspace.heimdall.client.config.HeimdallClientConfig;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class HeimdallClientFactory {
-	
-	/**
-	 * Create a client by a config.
-	 *
-	 * @param clientConfig The config.
-	 *
-	 * @return The client.
-	 */
-	public static HeimdallClient createHeimdallClient(HeimdallClientConfig clientConfig) {
-		return new SimpleHeimdallClient(clientConfig);
-	}
+
+    /**
+     * Create a client by a config.
+     *
+     * @param clientConfig The config.
+     * @return The client.
+     */
+    public static HeimdallClient createHeimdallClient(HeimdallClientConfig clientConfig) {
+        return new SimpleHeimdallClient(clientConfig);
+    }
 }

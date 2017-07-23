@@ -30,8 +30,8 @@ import org.json.JSONObject;
  */
 @Channel("cluster")
 public class PacketHandlerExample implements PacketHandler {
-	
-	public void handlePacket(JSONObject jsonObject) {
-		System.out.println("Message in cluster: " + jsonObject);
-	}
+
+    public void handlePacket(JSONObject jsonObject) {
+        System.out.println("Message in cluster: " + jsonObject);
+    }
 }

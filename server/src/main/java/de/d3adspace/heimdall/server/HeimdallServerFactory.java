@@ -29,15 +29,14 @@ import de.d3adspace.heimdall.server.config.HeimdallServerConfig;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class HeimdallServerFactory {
-	
-	/**
-	 * Create a new server based on a config.
-	 *
-	 * @param serverConfig The config.
-	 *
-	 * @return The server.
-	 */
-	public static HeimdallServer createHeimdallServer(HeimdallServerConfig serverConfig) {
-		return new SimpleHeimdallServer(serverConfig);
-	}
+
+    /**
+     * Create a new server based on a config.
+     *
+     * @param serverConfig The config.
+     * @return The server.
+     */
+    public static HeimdallServer createHeimdallServer(HeimdallServerConfig serverConfig) {
+        return new SimpleHeimdallServer(serverConfig);
+    }
 }

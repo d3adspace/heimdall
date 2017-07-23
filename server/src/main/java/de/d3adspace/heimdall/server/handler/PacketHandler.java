@@ -28,6 +28,6 @@ import org.json.JSONObject;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public interface PacketHandler {
-	
-	void handlePacket(HeimdallConnection connection, JSONObject jsonObject);
+
+    void handlePacket(HeimdallConnection connection, JSONObject jsonObject);
 }

@@ -28,11 +28,7 @@ import de.d3adspace.heimdall.server.handler.PacketHandler;
 import de.d3adspace.heimdall.server.handler.PacketHandlerFactory;
 import de.d3adspace.heimdall.server.initializer.ServerChannelInitializer;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.ServerChannel;
+import io.netty.channel.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,92 +39,92 @@ import org.slf4j.LoggerFactory;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public class SimpleHeimdallServer implements HeimdallServer {
-	
-	/**
-	 * Config to create the server from.
-	 */
-	private final HeimdallServerConfig config;
-	
-	/**
-	 * The handler for all incoming packets.
-	 */
-	private final PacketHandler packetHandler;
-	
-	/**
-	 * Logger for the server.
-	 */
-	private final Logger logger;
-	
-	/**
-	 * The basic server channel.
-	 */
-	private Channel channel;
-	
-	/**
-	 * The boss group for netty.
-	 */
-	private EventLoopGroup bossGroup;
-	
-	/**
-	 * The worker group for netty.
-	 */
-	private EventLoopGroup workerGroup;
-	
-	/**
-	 * Create a new server by a config.
-	 *
-	 * @param config The config.
-	 */
-	SimpleHeimdallServer(HeimdallServerConfig config) {
-		this.config = config;
-		this.packetHandler = PacketHandlerFactory.createPacketHandler();
-		this.logger = LoggerFactory.getLogger(SimpleHeimdallServer.class);
-	}
-	
-	@Override
-	public void start() {
-		this.bossGroup = NettyUtils.createEventLoopGroup(1);
-		this.workerGroup = NettyUtils.createEventLoopGroup(4);
-		
-		Class<? extends ServerChannel> serverChannelClass = NettyUtils.getServerChannelClass();
-		ChannelHandler channelHandler = new ServerChannelInitializer(this);
-		
-		this.logger.info("I'm going to start a new heimdall server instance on {}:{}",
-			this.config.getServerHost(), this.config.getServerPort());
-		
-		ServerBootstrap serverBootstrap = new ServerBootstrap();
-		
-		try {
-			channel = serverBootstrap
-				.group(bossGroup, workerGroup)
-				.channel(serverChannelClass)
-				.childHandler(channelHandler)
-				.childOption(ChannelOption.TCP_NODELAY, true)
-				.bind(this.config.getServerHost(), this.config.getServerPort())
-				.sync().channel();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
-		this.logger.info("Server started on {}:{}", this.config.getServerHost(),
-			this.config.getServerPort());
-	}
-	
-	@Override
-	public void stop() {
-		this.channel.close();
-		
-		this.bossGroup.shutdownGracefully();
-		this.workerGroup.shutdownGracefully();
-	}
-	
-	/**
-	 * Handling all incoming packets by a connection.
-	 *
-	 * @param connection The connection.
-	 * @param jsonObject The incoming data.
-	 */
-	public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
-		this.packetHandler.handlePacket(connection, jsonObject);
-	}
+
+    /**
+     * Config to create the server from.
+     */
+    private final HeimdallServerConfig config;
+
+    /**
+     * The handler for all incoming packets.
+     */
+    private final PacketHandler packetHandler;
+
+    /**
+     * Logger for the server.
+     */
+    private final Logger logger;
+
+    /**
+     * The basic server channel.
+     */
+    private Channel channel;
+
+    /**
+     * The boss group for netty.
+     */
+    private EventLoopGroup bossGroup;
+
+    /**
+     * The worker group for netty.
+     */
+    private EventLoopGroup workerGroup;
+
+    /**
+     * Create a new server by a config.
+     *
+     * @param config The config.
+     */
+    SimpleHeimdallServer(HeimdallServerConfig config) {
+        this.config = config;
+        this.packetHandler = PacketHandlerFactory.createPacketHandler();
+        this.logger = LoggerFactory.getLogger(SimpleHeimdallServer.class);
+    }
+
+    @Override
+    public void start() {
+        this.bossGroup = NettyUtils.createEventLoopGroup(1);
+        this.workerGroup = NettyUtils.createEventLoopGroup(4);
+
+        Class<? extends ServerChannel> serverChannelClass = NettyUtils.getServerChannelClass();
+        ChannelHandler channelHandler = new ServerChannelInitializer(this);
+
+        this.logger.info("I'm going to start a new heimdall server instance on {}:{}",
+                this.config.getServerHost(), this.config.getServerPort());
+
+        ServerBootstrap serverBootstrap = new ServerBootstrap();
+
+        try {
+            channel = serverBootstrap
+                    .group(bossGroup, workerGroup)
+                    .channel(serverChannelClass)
+                    .childHandler(channelHandler)
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    .bind(this.config.getServerHost(), this.config.getServerPort())
+                    .sync().channel();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.logger.info("Server started on {}:{}", this.config.getServerHost(),
+                this.config.getServerPort());
+    }
+
+    @Override
+    public void stop() {
+        this.channel.close();
+
+        this.bossGroup.shutdownGracefully();
+        this.workerGroup.shutdownGracefully();
+    }
+
+    /**
+     * Handling all incoming packets by a connection.
+     *
+     * @param connection The connection.
+     * @param jsonObject The incoming data.
+     */
+    public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
+        this.packetHandler.handlePacket(connection, jsonObject);
+    }
 }

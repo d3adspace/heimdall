@@ -30,32 +30,41 @@ import org.json.JSONObject;
  * @author Felix 'SasukeKawaii' Klauke
  */
 public interface HeimdallClient {
-	
-	/**
-	 * Connect to the server.
-	 */
-	void connect();
-	
-	/**
-	 * Disconnect from the server.
-	 */
-	void disconnect();
-	
-	/**
-	 * Add a new subscriber.
-	 */
-	void subscribe(PacketHandler packetHandler);
-	
-	/**
-	 * Remove a subscription.
-	 */
-	void unsubscribe(PacketHandler packetHandler);
-	
-	/**
-	 * Publish an object to the network.
-	 *
-	 * @param channelName The channel name.
-	 * @param jsonObject The object.
-	 */
-	void publish(String channelName, JSONObject jsonObject);
+
+    /**
+     * Connect to the server.
+     */
+    void connect();
+
+    /**
+     * Disconnect from the server.
+     */
+    void disconnect();
+
+    /**
+     * Add a new subscriber.
+     */
+    void subscribe(PacketHandler packetHandler);
+
+    /**
+     * Remove a subscription.
+     */
+    void unsubscribe(PacketHandler packetHandler);
+
+    /**
+     * Publish an object to the network.
+     *
+     * @param channelName The channel name.
+     * @param jsonObject  The object.
+     */
+    void publish(String channelName, JSONObject jsonObject);
+
+    /**
+     * Perform a request, you will get a response!
+     *
+     * @param channelName The channel name.
+     * @param jsonObject The request.
+     * @param response The consumer for the response.
+     *//*
+    void request(String channelName, JSONObject jsonObject, Consumer<JSONObject> response);*/
 }

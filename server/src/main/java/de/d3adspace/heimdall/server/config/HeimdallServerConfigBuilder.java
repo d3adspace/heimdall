@@ -22,21 +22,21 @@
 package de.d3adspace.heimdall.server.config;
 
 public class HeimdallServerConfigBuilder {
-	
-	private String serverHost;
-	private int serverPort;
-	
-	public HeimdallServerConfigBuilder setServerHost(String serverHost) {
-		this.serverHost = serverHost;
-		return this;
-	}
-	
-	public HeimdallServerConfigBuilder setServerPort(int serverPort) {
-		this.serverPort = serverPort;
-		return this;
-	}
-	
-	public HeimdallServerConfig createHeimdallServerConfig() {
-		return new HeimdallServerConfig(serverHost, serverPort);
-	}
+
+    private String serverHost;
+    private int serverPort;
+
+    public HeimdallServerConfigBuilder setServerHost(String serverHost) {
+        this.serverHost = serverHost;
+        return this;
+    }
+
+    public HeimdallServerConfigBuilder setServerPort(int serverPort) {
+        this.serverPort = serverPort;
+        return this;
+    }
+
+    public HeimdallServerConfig createHeimdallServerConfig() {
+        return new HeimdallServerConfig(serverHost, serverPort);
+    }
 }
