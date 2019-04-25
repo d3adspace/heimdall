@@ -30,7 +30,7 @@
     </appender>
 
     <appender class="ch.qos.logback.core.FileAppender" name="FILE">
-        <file>heimdall-server.log</file>
+        <file>heimdall-client.log</file>
         <append>true</append>
         <immediateFlush>true</immediateFlush>
         <encoder>
