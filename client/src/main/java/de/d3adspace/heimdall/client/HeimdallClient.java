@@ -58,13 +58,4 @@ public interface HeimdallClient {
      * @param jsonObject  The object.
      */
     void publish(String channelName, JSONObject jsonObject);
-
-    /**
-     * Perform a request, you will get a response!
-     *
-     * @param channelName The channel name.
-     * @param jsonObject The request.
-     * @param response The consumer for the response.
-     *//*
-    void request(String channelName, JSONObject jsonObject, Consumer<JSONObject> response);*/
 }
