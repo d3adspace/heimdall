@@ -21,7 +21,6 @@
 
 package de.d3adspace.heimdall.client;
 
-import de.d3adspace.hawkings.Hawkings;
 import de.d3adspace.heimdall.client.config.HeimdallClientConfig;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import de.d3adspace.heimdall.client.handler.SubscriptionHandler;
