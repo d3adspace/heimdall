@@ -23,6 +23,7 @@ package de.d3adspace.heimdall.client.handler;
 
 import de.d3adspace.heimdall.client.SimpleHeimdallClient;
 import de.d3adspace.heimdall.client.annotation.Channel;
+import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -96,7 +97,7 @@ public class SubscriptionHandler {
             packetHandlers.put(channel.value(), new CopyOnWriteArrayList<>());
 
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("actionId", Action.SUBSCRIBE.getActionId());
+            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.SUBSCRIBE.getActionId());
             jsonObject.put("channelName", channel.value());
 
             client.publish(channel.value(), jsonObject);
@@ -119,7 +120,7 @@ public class SubscriptionHandler {
 
         if (packetHandlers.get(channel.value()).isEmpty()) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("actionId", Action.UNSUBSCRIBE.getActionId());
+            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
             jsonObject.put("channelName", channel.value());
 
             client.publish(channel.value(), jsonObject);
@@ -135,8 +136,8 @@ public class SubscriptionHandler {
         packetHandlers.keySet().forEach(channelName -> {
             logger.info("Unsubscribing from {}", channelName);
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("actionId", Action.UNSUBSCRIBE.getActionId());
-            jsonObject.put("channelName", channelName);
+            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
+            jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
             client.publish(channelName, jsonObject);
         });
 

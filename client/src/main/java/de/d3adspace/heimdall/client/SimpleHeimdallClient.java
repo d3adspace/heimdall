@@ -26,6 +26,7 @@ import de.d3adspace.heimdall.client.config.HeimdallClientConfig;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import de.d3adspace.heimdall.client.handler.SubscriptionHandler;
 import de.d3adspace.heimdall.client.initializer.ClientChannelInitializer;
+import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
 import de.d3adspace.heimdall.commons.utils.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
@@ -142,10 +143,10 @@ public class SimpleHeimdallClient implements HeimdallClient {
 
     @Override
     public void publish(String channelName, JSONObject jsonObject) {
-        jsonObject.put("channelName", channelName);
+        jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
 
-        if (!jsonObject.has("actionId")) {
-            jsonObject.put("actionId", Action.BROADCAST.getActionId());
+        if (!jsonObject.has(HeimdallMessageFields.MESSAGE_ACTION_CODE)) {
+            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.BROADCAST.getActionId());
         }
 
         channel.writeAndFlush(jsonObject);
@@ -166,7 +167,7 @@ public class SimpleHeimdallClient implements HeimdallClient {
      * @param jsonObject The object
      */
     public void handlePacket(JSONObject jsonObject) {
-        String channelName = (String) jsonObject.remove("channelName");
+        String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
 
         subscriptionHandler.handlePacket(channelName, jsonObject);
     }
