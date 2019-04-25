@@ -64,11 +64,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
     private final Logger logger;
 
     /**
-     * The hawkings instance to manager consumers.
-     */
-    private final Hawkings<JSONObject> hawkings;
-
-    /**
      * Netty worker.
      */
     private EventLoopGroup workerGroup;
@@ -87,7 +82,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
         this.config = config;
         this.subscriptionHandler = new SubscriptionHandler(this);
         this.logger = LoggerFactory.getLogger(SimpleHeimdallClient.class);
-        this.hawkings = new Hawkings<>();
     }
 
     @Override
@@ -150,15 +144,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
         }
 
         channel.writeAndFlush(jsonObject);
-    }
-
-    /**
-     * Get the hawkings instance.
-     *
-     * @return The hawkings.
-     */
-    public Hawkings<JSONObject> getHawkings() {
-        return hawkings;
     }
 
     /**

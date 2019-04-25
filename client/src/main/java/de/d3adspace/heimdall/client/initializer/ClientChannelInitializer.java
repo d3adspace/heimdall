@@ -52,7 +52,7 @@ public class ClientChannelInitializer extends ChannelInitializer<Channel> {
         this.client = client;
     }
 
-    public void initChannel(Channel channel) throws Exception {
+    public void initChannel(Channel channel) {
         ChannelPipeline pipeline = channel.pipeline();
 
         ChannelHandler lengthFieldBasedFrameDecoder = NettyUtils

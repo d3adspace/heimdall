@@ -59,13 +59,12 @@ public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> 
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject)
-            throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject) {
         client.handlePacket(jsonObject);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if (cause instanceof IOException) {
             NettyUtils.closeWhenFlushed(ctx.channel());
             return;
@@ -75,7 +74,7 @@ public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> 
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    public void channelInactive(ChannelHandlerContext ctx) {
         logger.info("Lost connection to the server.");
     }
 }
