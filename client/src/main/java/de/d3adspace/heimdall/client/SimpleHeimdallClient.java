@@ -30,11 +30,15 @@ import de.d3adspace.heimdall.commons.action.Action;
 import de.d3adspace.heimdall.commons.utils.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Basic client implementation.
@@ -87,6 +91,7 @@ public class SimpleHeimdallClient implements HeimdallClient {
 
     @Override
     public void connect() {
+
         this.workerGroup = NettyUtils.createEventLoopGroup(4);
 
         Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
@@ -96,20 +101,24 @@ public class SimpleHeimdallClient implements HeimdallClient {
 
         Bootstrap bootstrap = new Bootstrap();
 
-        try {
-            channel = bootstrap
-                    .group(this.workerGroup)
-                    .channel(clientChannelClazz)
-                    .handler(new ClientChannelInitializer(this))
-                    .option(ChannelOption.TCP_NODELAY, true)
-                    .connect(this.config.getServerHost(), this.config.getServerPort())
-                    .sync().channel();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        ChannelFuture channelFuture = bootstrap
+                .group(this.workerGroup)
+                .channel(clientChannelClazz)
+                .handler(new ClientChannelInitializer(this))
+                .option(ChannelOption.TCP_NODELAY, true)
+                .connect(this.config.getServerHost(), this.config.getServerPort());
 
-        this.logger.info("Connected to server {}:{}", this.config.getServerHost(),
-                this.config.getServerPort());
+        channelFuture.awaitUninterruptibly(5, TimeUnit.SECONDS);
+        channel = channelFuture.channel();
+
+        channelFuture.addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                logger.info("Connected to server {}:{}", config.getServerHost(),
+                        config.getServerPort());
+            } else {
+                logger.error("Couldn't connect to the server: {}", future.cause().getMessage());
+            }
+        });
     }
 
     @Override
@@ -151,17 +160,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
         return hawkings;
     }
 
-	/*@Override
-	public void request(String channelName, JSONObject jsonObject, Consumer<JSONObject> response) {
-		int consumerId = this.hawkings.incrementAndGetId();
-		this.hawkings.registerConsumer(response);
-
-		jsonObject.put("actionId", Action.REQUEST.getActionId());
-		jsonObject.put("consumerId", consumerId);
-
-		this.publish(channelName, jsonObject);
-	}*/
-
     /**
      * Delegate a packet to the belonging handler.
      *
@@ -169,12 +167,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
      */
     public void handlePacket(JSONObject jsonObject) {
         String channelName = (String) jsonObject.remove("channelName");
-
-		/*if (jsonObject.has("consumerId")) {
-			int consumerId = jsonObject.getInt("consumerId");
-			this.hawkings.invokeConsumer(consumerId, jsonObject);
-			return;
-		}*/
 
         this.subscriptionHandler.handlePacket(channelName, jsonObject);
     }
