@@ -20,8 +20,20 @@ RUN mvn clean install package
 ########################
 FROM openjdk:8 AS runtime
 
+###############
+### Workdir ###
+###############
 WORKDIR /opt/app
 
+###################
+### Environment ###
+###################
+ENV HEIMDALL_SERVER_HOST=0.0.0.0
+ENV HEIMDALL_SERVER_PORT=8080
+
+###################
+### Copy server ###
+###################
 COPY --from=build server/target/heimdall-server.jar /opt/app/server.jar
 
 EXPOSE 8080
