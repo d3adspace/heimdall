@@ -86,29 +86,29 @@ public class SimpleHeimdallClient implements HeimdallClient {
     @Override
     public void connect() {
 
+        String serverHost = config.getServerHost();
+        int serverPort = config.getServerPort();
+
         workerGroup = NettyUtils.createEventLoopGroup(4);
 
         Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
 
-        logger.info("Connecting to server {}:{}", config.getServerHost(),
-                config.getServerPort());
+        logger.info("Connecting to server {}:{}", serverHost, serverPort);
 
         Bootstrap bootstrap = new Bootstrap();
-
         ChannelFuture channelFuture = bootstrap
                 .group(workerGroup)
                 .channel(clientChannelClazz)
                 .handler(new ClientChannelInitializer(this))
                 .option(ChannelOption.TCP_NODELAY, true)
-                .connect(config.getServerHost(), config.getServerPort());
+                .connect(serverHost, serverPort);
 
         channelFuture.awaitUninterruptibly(5, TimeUnit.SECONDS);
         channel = channelFuture.channel();
 
         channelFuture.addListener((ChannelFutureListener) future -> {
             if (future.isSuccess()) {
-                logger.info("Connected to server {}:{}", config.getServerHost(),
-                        config.getServerPort());
+                logger.info("Connected to server {}:{}", serverHost, serverPort);
             } else {
                 logger.error("Couldn't connect to the server: {}", future.cause().getMessage());
             }
