@@ -91,19 +91,21 @@ public class SubscriptionHandler {
     public void registerPacketHandler(PacketHandler packetHandler) {
         Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
 
-        logger.info("Subscribing to channel {}", channel.value());
+        String channelName = channel.value();
 
-        if (!packetHandlers.containsKey(channel.value())) {
-            packetHandlers.put(channel.value(), new CopyOnWriteArrayList<>());
+        logger.info("Subscribing to channel {}", channelName);
+
+        if (!packetHandlers.containsKey(channelName)) {
+            packetHandlers.put(channelName, new CopyOnWriteArrayList<>());
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.SUBSCRIBE.getActionId());
-            jsonObject.put("channelName", channel.value());
+            jsonObject.put("channelName", channelName);
 
-            client.publish(channel.value(), jsonObject);
+            client.publish(channelName, jsonObject);
         }
 
-        packetHandlers.get(channel.value()).add(packetHandler);
+        packetHandlers.get(channelName).add(packetHandler);
     }
 
     /**
