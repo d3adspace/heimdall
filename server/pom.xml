@@ -32,7 +32,7 @@
 
     <artifactId>heimdall-server</artifactId>
     <build>
-        <finalName>heimdal-server</finalName>
+        <finalName>heimdall-server</finalName>
 
         <plugins>
             <plugin>
