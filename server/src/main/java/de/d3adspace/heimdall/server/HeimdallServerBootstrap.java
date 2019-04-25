@@ -9,7 +9,7 @@ public class HeimdallServerBootstrap {
 
         HeimdallServerConfig config = new HeimdallServerConfigBuilder()
                 .setServerHost("localhost")
-                .setServerPort(1337)
+                .setServerPort(8080)
                 .createHeimdallServerConfig();
 
         HeimdallServer heimdallServer = HeimdallServerFactory.createHeimdallServer(config);
