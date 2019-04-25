@@ -61,7 +61,7 @@ public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject)
             throws Exception {
-        this.client.handlePacket(jsonObject);
+        client.handlePacket(jsonObject);
     }
 
     @Override
@@ -76,6 +76,6 @@ public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> 
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        this.logger.info("Lost connection to the server.");
+        logger.info("Lost connection to the server.");
     }
 }

@@ -90,19 +90,19 @@ public class SubscriptionHandler {
     public void registerPacketHandler(PacketHandler packetHandler) {
         Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
 
-        this.logger.info("Subscribing to channel {}", channel.value());
+        logger.info("Subscribing to channel {}", channel.value());
 
-        if (!this.packetHandlers.containsKey(channel.value())) {
-            this.packetHandlers.put(channel.value(), new CopyOnWriteArrayList<>());
+        if (!packetHandlers.containsKey(channel.value())) {
+            packetHandlers.put(channel.value(), new CopyOnWriteArrayList<>());
 
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("actionId", Action.SUBSCRIBE.getActionId());
             jsonObject.put("channelName", channel.value());
 
-            this.client.publish(channel.value(), jsonObject);
+            client.publish(channel.value(), jsonObject);
         }
 
-        this.packetHandlers.get(channel.value()).add(packetHandler);
+        packetHandlers.get(channel.value()).add(packetHandler);
     }
 
     /**
@@ -113,18 +113,18 @@ public class SubscriptionHandler {
     public void unregisterPacketHandler(PacketHandler packetHandler) {
         Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
 
-        this.logger.info("Unsubscribing from {}", channel.value());
+        logger.info("Unsubscribing from {}", channel.value());
 
-        this.packetHandlers.get(channel.value()).remove(packetHandler);
+        packetHandlers.get(channel.value()).remove(packetHandler);
 
-        if (this.packetHandlers.get(channel.value()).isEmpty()) {
+        if (packetHandlers.get(channel.value()).isEmpty()) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("actionId", Action.UNSUBSCRIBE.getActionId());
             jsonObject.put("channelName", channel.value());
 
-            this.client.publish(channel.value(), jsonObject);
+            client.publish(channel.value(), jsonObject);
 
-            this.packetHandlers.remove(channel.value());
+            packetHandlers.remove(channel.value());
         }
     }
 
@@ -132,16 +132,14 @@ public class SubscriptionHandler {
      * Unregister all known packet handlers.
      */
     public void unregisterPacketHandlers() {
-        for (String channelName : this.packetHandlers.keySet()) {
-            this.logger.info("Unsubscribing from {}", channelName);
-
+        packetHandlers.keySet().forEach(channelName -> {
+            logger.info("Unsubscribing from {}", channelName);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("actionId", Action.UNSUBSCRIBE.getActionId());
             jsonObject.put("channelName", channelName);
+            client.publish(channelName, jsonObject);
+        });
 
-            this.client.publish(channelName, jsonObject);
-        }
-
-        this.packetHandlers.clear();
+        packetHandlers.clear();
     }
 }

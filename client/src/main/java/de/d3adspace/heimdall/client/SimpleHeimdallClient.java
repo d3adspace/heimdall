@@ -92,21 +92,21 @@ public class SimpleHeimdallClient implements HeimdallClient {
     @Override
     public void connect() {
 
-        this.workerGroup = NettyUtils.createEventLoopGroup(4);
+        workerGroup = NettyUtils.createEventLoopGroup(4);
 
         Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
 
-        this.logger.info("Connecting to server {}:{}", this.config.getServerHost(),
-                this.config.getServerPort());
+        logger.info("Connecting to server {}:{}", config.getServerHost(),
+                config.getServerPort());
 
         Bootstrap bootstrap = new Bootstrap();
 
         ChannelFuture channelFuture = bootstrap
-                .group(this.workerGroup)
+                .group(workerGroup)
                 .channel(clientChannelClazz)
                 .handler(new ClientChannelInitializer(this))
                 .option(ChannelOption.TCP_NODELAY, true)
-                .connect(this.config.getServerHost(), this.config.getServerPort());
+                .connect(config.getServerHost(), config.getServerPort());
 
         channelFuture.awaitUninterruptibly(5, TimeUnit.SECONDS);
         channel = channelFuture.channel();
@@ -123,21 +123,21 @@ public class SimpleHeimdallClient implements HeimdallClient {
 
     @Override
     public void disconnect() {
-        this.subscriptionHandler.unregisterPacketHandlers();
+        subscriptionHandler.unregisterPacketHandlers();
 
-        this.channel.close();
+        channel.close();
 
-        this.workerGroup.shutdownGracefully();
+        workerGroup.shutdownGracefully();
     }
 
     @Override
     public void subscribe(PacketHandler packetHandler) {
-        this.subscriptionHandler.registerPacketHandler(packetHandler);
+        subscriptionHandler.registerPacketHandler(packetHandler);
     }
 
     @Override
     public void unsubscribe(PacketHandler packetHandler) {
-        this.subscriptionHandler.unregisterPacketHandler(packetHandler);
+        subscriptionHandler.unregisterPacketHandler(packetHandler);
     }
 
     @Override
@@ -148,7 +148,7 @@ public class SimpleHeimdallClient implements HeimdallClient {
             jsonObject.put("actionId", Action.BROADCAST.getActionId());
         }
 
-        this.channel.writeAndFlush(jsonObject);
+        channel.writeAndFlush(jsonObject);
     }
 
     /**
@@ -168,6 +168,6 @@ public class SimpleHeimdallClient implements HeimdallClient {
     public void handlePacket(JSONObject jsonObject) {
         String channelName = (String) jsonObject.remove("channelName");
 
-        this.subscriptionHandler.handlePacket(channelName, jsonObject);
+        subscriptionHandler.handlePacket(channelName, jsonObject);
     }
 }
