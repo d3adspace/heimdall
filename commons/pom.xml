@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 -2019 D3adspace
+  ~ Copyright (c) 2017 - 2019 D3adspace
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
   ~ this software and associated documentation files (the "Software"), to deal in
@@ -60,7 +60,8 @@
     </build>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+
+        <!-- Netty -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
@@ -68,6 +69,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- JSON -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>

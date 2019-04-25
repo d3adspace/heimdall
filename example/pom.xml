@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2017 -2019 D3adspace
+  ~ Copyright (c) 2017 - 2019 D3adspace
   ~
   ~ Permission is hereby granted, free of charge, to any person obtaining a copy of
   ~ this software and associated documentation files (the "Software"), to deal in
@@ -32,19 +32,6 @@
 
     <artifactId>heimdall-example</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>de.d3adspace.heimdall</groupId>
-            <artifactId>heimdall-client</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>de.d3adspace.heimdall</groupId>
-            <artifactId>heimdall-server</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -58,5 +45,22 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+
+        <!-- Heimdall Client -->
+        <dependency>
+            <groupId>de.d3adspace.heimdall</groupId>
+            <artifactId>heimdall-client</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Heimdall Server -->
+        <dependency>
+            <groupId>de.d3adspace.heimdall</groupId>
+            <artifactId>heimdall-server</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>
