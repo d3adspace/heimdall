@@ -32,6 +32,8 @@
 
     <artifactId>heimdall-server</artifactId>
     <build>
+        <finalName>heimdal-server</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
