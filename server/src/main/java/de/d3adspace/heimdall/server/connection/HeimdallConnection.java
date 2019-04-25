@@ -34,7 +34,7 @@ import java.net.SocketAddress;
 /**
  * Representing a connection of a client to the server.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> {
 

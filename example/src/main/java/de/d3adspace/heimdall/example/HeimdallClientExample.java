@@ -29,7 +29,7 @@ import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallClientExample {
 

@@ -25,7 +25,7 @@ import de.d3adspace.heimdall.server.connection.HeimdallConnection;
 import org.json.JSONObject;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public interface PacketHandler {
 

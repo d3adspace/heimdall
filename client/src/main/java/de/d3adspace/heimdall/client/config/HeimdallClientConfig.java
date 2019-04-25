@@ -24,7 +24,7 @@ package de.d3adspace.heimdall.client.config;
 /**
  * Config for a new client.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallClientConfig {
 

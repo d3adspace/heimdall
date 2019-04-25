@@ -34,7 +34,7 @@ import io.netty.channel.ChannelPipeline;
 /**
  * Setup for all the connections.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 

@@ -48,7 +48,7 @@ import de.d3adspace.heimdall.server.config.HeimdallServerConfig;
 import de.d3adspace.heimdall.server.config.HeimdallServerConfigBuilder;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallServerExample {
 	
@@ -77,7 +77,7 @@ import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallClientExample {
 	
@@ -109,7 +109,7 @@ import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 @Channel("cluster")
 public class PacketHandlerExample implements PacketHandler {

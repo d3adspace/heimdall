@@ -26,7 +26,7 @@ import de.d3adspace.heimdall.client.config.HeimdallClientConfig;
 /**
  * Factory for all clients.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallClientFactory {
 

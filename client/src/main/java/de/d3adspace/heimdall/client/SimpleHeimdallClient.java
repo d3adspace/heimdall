@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic client implementation.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class SimpleHeimdallClient implements HeimdallClient {
 
@@ -155,10 +155,10 @@ public class SimpleHeimdallClient implements HeimdallClient {
 	public void request(String channelName, JSONObject jsonObject, Consumer<JSONObject> response) {
 		int consumerId = this.hawkings.incrementAndGetId();
 		this.hawkings.registerConsumer(response);
-		
+
 		jsonObject.put("actionId", Action.REQUEST.getActionId());
 		jsonObject.put("consumerId", consumerId);
-		
+
 		this.publish(channelName, jsonObject);
 	}*/
 
@@ -169,7 +169,7 @@ public class SimpleHeimdallClient implements HeimdallClient {
      */
     public void handlePacket(JSONObject jsonObject) {
         String channelName = (String) jsonObject.remove("channelName");
-		
+
 		/*if (jsonObject.has("consumerId")) {
 			int consumerId = jsonObject.getInt("consumerId");
 			this.hawkings.invokeConsumer(consumerId, jsonObject);

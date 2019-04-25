@@ -24,7 +24,7 @@ package de.d3adspace.heimdall.server;
 /**
  * Basic interface for the Heimdall server.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public interface HeimdallServer {
 

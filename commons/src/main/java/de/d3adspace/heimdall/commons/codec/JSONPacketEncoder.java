@@ -31,7 +31,7 @@ import java.nio.CharBuffer;
 import java.util.List;
 
 /**
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class JSONPacketEncoder extends MessageToMessageEncoder<JSONObject> {
 

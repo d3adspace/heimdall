@@ -27,7 +27,7 @@ import org.json.JSONObject;
 /**
  * Basic Heimdall client interface.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public interface HeimdallClient {
 

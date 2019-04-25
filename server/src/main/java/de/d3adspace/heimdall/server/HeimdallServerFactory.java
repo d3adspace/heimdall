@@ -26,7 +26,7 @@ import de.d3adspace.heimdall.server.config.HeimdallServerConfig;
 /**
  * Factory for all server implementations.
  *
- * @author Felix 'SasukeKawaii' Klauke
+ * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallServerFactory {
 
