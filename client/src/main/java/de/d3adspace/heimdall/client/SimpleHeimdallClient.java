@@ -34,11 +34,10 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import java.util.concurrent.TimeUnit;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Basic client implementation.
@@ -47,112 +46,112 @@ import java.util.concurrent.TimeUnit;
  */
 public class SimpleHeimdallClient implements HeimdallClient {
 
-    /**
-     * The configuration for the client.
-     */
-    private final HeimdallClientConfig config;
+  /**
+   * The configuration for the client.
+   */
+  private final HeimdallClientConfig config;
 
-    /**
-     * The subscription handler.
-     */
-    private final SubscriptionHandler subscriptionHandler;
+  /**
+   * The subscription handler.
+   */
+  private final SubscriptionHandler subscriptionHandler;
 
-    /**
-     * The Logger for the client.
-     */
-    private final Logger logger;
+  /**
+   * The Logger for the client.
+   */
+  private final Logger logger;
 
-    /**
-     * Netty worker.
-     */
-    private EventLoopGroup workerGroup;
+  /**
+   * Netty worker.
+   */
+  private EventLoopGroup workerGroup;
 
-    /**
-     * The connection channel to the server.
-     */
-    private Channel channel;
+  /**
+   * The connection channel to the server.
+   */
+  private Channel channel;
 
-    /**
-     * Create a client by the config.
-     *
-     * @param config The config.
-     */
-    SimpleHeimdallClient(HeimdallClientConfig config) {
-        this.config = config;
-        this.subscriptionHandler = new SubscriptionHandler(this);
-        this.logger = LoggerFactory.getLogger(SimpleHeimdallClient.class);
+  /**
+   * Create a client by the config.
+   *
+   * @param config The config.
+   */
+  SimpleHeimdallClient(HeimdallClientConfig config) {
+    this.config = config;
+    this.subscriptionHandler = new SubscriptionHandler(this);
+    this.logger = LoggerFactory.getLogger(SimpleHeimdallClient.class);
+  }
+
+  @Override
+  public void connect() {
+
+    String serverHost = config.getServerHost();
+    int serverPort = config.getServerPort();
+
+    workerGroup = NettyUtils.createEventLoopGroup(4);
+
+    Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
+
+    logger.info("Connecting to server {}:{}", serverHost, serverPort);
+
+    Bootstrap bootstrap = new Bootstrap();
+    ChannelFuture channelFuture = bootstrap
+      .group(workerGroup)
+      .channel(clientChannelClazz)
+      .handler(new ClientChannelInitializer(this))
+      .option(ChannelOption.TCP_NODELAY, true)
+      .connect(serverHost, serverPort);
+
+    channelFuture.awaitUninterruptibly(5, TimeUnit.SECONDS);
+    channel = channelFuture.channel();
+
+    channelFuture.addListener((ChannelFutureListener) future -> {
+      if (future.isSuccess()) {
+        logger.info("Connected to server {}:{}", serverHost, serverPort);
+      } else {
+        logger.error("Couldn't connect to the server: {}", future.cause().getMessage());
+      }
+    });
+  }
+
+  @Override
+  public void disconnect() {
+    subscriptionHandler.unregisterPacketHandlers();
+
+    channel.close();
+
+    workerGroup.shutdownGracefully();
+  }
+
+  @Override
+  public void subscribe(PacketHandler packetHandler) {
+    subscriptionHandler.registerPacketHandler(packetHandler);
+  }
+
+  @Override
+  public void unsubscribe(PacketHandler packetHandler) {
+    subscriptionHandler.unregisterPacketHandler(packetHandler);
+  }
+
+  @Override
+  public void publish(String channelName, JSONObject jsonObject) {
+    jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
+
+    if (!jsonObject.has(HeimdallMessageFields.MESSAGE_ACTION_CODE)) {
+      jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.BROADCAST.getActionId());
     }
 
-    @Override
-    public void connect() {
+    channel.writeAndFlush(jsonObject);
+  }
 
-        String serverHost = config.getServerHost();
-        int serverPort = config.getServerPort();
+  /**
+   * Delegate a packet to the belonging handler.
+   *
+   * @param jsonObject The object
+   */
+  public void handlePacket(JSONObject jsonObject) {
+    String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
 
-        workerGroup = NettyUtils.createEventLoopGroup(4);
-
-        Class<? extends Channel> clientChannelClazz = NettyUtils.getChannel();
-
-        logger.info("Connecting to server {}:{}", serverHost, serverPort);
-
-        Bootstrap bootstrap = new Bootstrap();
-        ChannelFuture channelFuture = bootstrap
-                .group(workerGroup)
-                .channel(clientChannelClazz)
-                .handler(new ClientChannelInitializer(this))
-                .option(ChannelOption.TCP_NODELAY, true)
-                .connect(serverHost, serverPort);
-
-        channelFuture.awaitUninterruptibly(5, TimeUnit.SECONDS);
-        channel = channelFuture.channel();
-
-        channelFuture.addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                logger.info("Connected to server {}:{}", serverHost, serverPort);
-            } else {
-                logger.error("Couldn't connect to the server: {}", future.cause().getMessage());
-            }
-        });
-    }
-
-    @Override
-    public void disconnect() {
-        subscriptionHandler.unregisterPacketHandlers();
-
-        channel.close();
-
-        workerGroup.shutdownGracefully();
-    }
-
-    @Override
-    public void subscribe(PacketHandler packetHandler) {
-        subscriptionHandler.registerPacketHandler(packetHandler);
-    }
-
-    @Override
-    public void unsubscribe(PacketHandler packetHandler) {
-        subscriptionHandler.unregisterPacketHandler(packetHandler);
-    }
-
-    @Override
-    public void publish(String channelName, JSONObject jsonObject) {
-        jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
-
-        if (!jsonObject.has(HeimdallMessageFields.MESSAGE_ACTION_CODE)) {
-            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.BROADCAST.getActionId());
-        }
-
-        channel.writeAndFlush(jsonObject);
-    }
-
-    /**
-     * Delegate a packet to the belonging handler.
-     *
-     * @param jsonObject The object
-     */
-    public void handlePacket(JSONObject jsonObject) {
-        String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
-
-        subscriptionHandler.handlePacket(channelName, jsonObject);
-    }
+    subscriptionHandler.handlePacket(channelName, jsonObject);
+  }
 }

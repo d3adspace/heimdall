@@ -25,66 +25,65 @@ import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
 import de.d3adspace.heimdall.server.connection.HeimdallConnection;
 import de.d3adspace.heimdall.server.subscription.SubscriptionContainer;
-import org.json.JSONObject;
-
 import java.util.List;
+import org.json.JSONObject;
 
 /**
  * @author Felix Klauke <info@felix-klauke.de>
  */
 public class SimplePacketHandler implements PacketHandler {
 
-    /**
-     * Registry for all subscriptions.
-     */
-    private final SubscriptionContainer subscriptionContainer;
+  /**
+   * Registry for all subscriptions.
+   */
+  private final SubscriptionContainer subscriptionContainer;
 
-    /**
-     * Create a new handler based on a container of subscriptions.
-     *
-     * @param subscriptionContainer The subscription container.
-     */
-    SimplePacketHandler(SubscriptionContainer subscriptionContainer) {
-        this.subscriptionContainer = subscriptionContainer;
+  /**
+   * Create a new handler based on a container of subscriptions.
+   *
+   * @param subscriptionContainer The subscription container.
+   */
+  SimplePacketHandler(SubscriptionContainer subscriptionContainer) {
+    this.subscriptionContainer = subscriptionContainer;
+  }
+
+  @Override
+  public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
+    int actionId = (int) jsonObject.remove(HeimdallMessageFields.MESSAGE_ACTION_CODE);
+    Action action = Action.getAction(actionId);
+
+    handleAction(connection, jsonObject, action);
+  }
+
+  /**
+   * Handle an action internal.
+   *
+   * @param connection The connection.
+   * @param jsonObject The packet to handle.
+   * @param action The action to handle.
+   */
+  private void handleAction(HeimdallConnection connection, JSONObject jsonObject, Action action) {
+    if (action == Action.SUBSCRIBE) {
+      String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
+
+      subscriptionContainer.addSubscription(channelName, connection);
+    } else if (action == Action.UNSUBSCRIBE) {
+      String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
+
+      subscriptionContainer.removeSubscription(channelName, connection);
+    } else if (action == Action.BROADCAST) {
+      String channelName = jsonObject.getString(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
+
+      List<HeimdallConnection> subscribers = subscriptionContainer
+        .getSubscribers(channelName);
+
+      if (subscribers == null) {
+        return;
+      }
+
+      subscribers.stream()
+        .filter(subscriber -> subscriber != connection)
+        .forEach(subscriber -> subscriber.sendPacket(jsonObject));
     }
-
-    @Override
-    public void handlePacket(HeimdallConnection connection, JSONObject jsonObject) {
-        int actionId = (int) jsonObject.remove(HeimdallMessageFields.MESSAGE_ACTION_CODE);
-        Action action = Action.getAction(actionId);
-
-        handleAction(connection, jsonObject, action);
-    }
-
-    /**
-     * Handle an action internal.
-     *
-     * @param connection The connection.
-     * @param jsonObject The packet to handle.
-     * @param action     The action to handle.
-     */
-    private void handleAction(HeimdallConnection connection, JSONObject jsonObject, Action action) {
-        if (action == Action.SUBSCRIBE) {
-            String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
-
-            subscriptionContainer.addSubscription(channelName, connection);
-        } else if (action == Action.UNSUBSCRIBE) {
-            String channelName = (String) jsonObject.remove(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
-
-            subscriptionContainer.removeSubscription(channelName, connection);
-        } else if (action == Action.BROADCAST) {
-            String channelName = jsonObject.getString(HeimdallMessageFields.MESSAGE_CHANNEL_NAME);
-
-            List<HeimdallConnection> subscribers = subscriptionContainer
-                    .getSubscribers(channelName);
-
-            if (subscribers == null) {
-                return;
-            }
-
-            subscribers.stream()
-                    .filter(subscriber -> subscriber != connection)
-                    .forEach(subscriber -> subscriber.sendPacket(jsonObject));
-        }
-    }
+  }
 }

@@ -33,22 +33,22 @@ import org.json.JSONObject;
  */
 public class HeimdallClientExample {
 
-    public static void main(String[] args) {
-        HeimdallClientConfig config = new HeimdallClientConfigBuilder()
-                .setServerHost("localhost")
-                .setServerPort(1337)
-                .createHeimdallClientConfig();
+  public static void main(String[] args) {
+    HeimdallClientConfig config = new HeimdallClientConfigBuilder()
+      .setServerHost("localhost")
+      .setServerPort(1337)
+      .createHeimdallClientConfig();
 
-        HeimdallClient client = HeimdallClientFactory.createHeimdallClient(config);
-        client.connect();
+    HeimdallClient client = HeimdallClientFactory.createHeimdallClient(config);
+    client.connect();
 
-        PacketHandler packetHandler = new PacketHandlerExample();
-        client.subscribe(packetHandler);
+    PacketHandler packetHandler = new PacketHandlerExample();
+    client.subscribe(packetHandler);
 
-        client.publish("cluster", new JSONObject().put("Hello", "World!"));
+    client.publish("cluster", new JSONObject().put("Hello", "World!"));
 
-        client.unsubscribe(packetHandler);
+    client.unsubscribe(packetHandler);
 
-        client.disconnect();
-    }
+    client.disconnect();
+  }
 }

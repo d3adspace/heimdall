@@ -35,10 +35,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface Channel {
 
-    /**
-     * Get the name of the channel.
-     *
-     * @return The channel.
-     */
-    String value();
+  /**
+   * Get the name of the channel.
+   *
+   * @return The channel.
+   */
+  String value();
 }

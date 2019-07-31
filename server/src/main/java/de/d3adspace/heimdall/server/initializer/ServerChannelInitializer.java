@@ -38,38 +38,38 @@ import io.netty.channel.ChannelPipeline;
  */
 public class ServerChannelInitializer extends ChannelInitializer<Channel> {
 
-    /**
-     * The underlying server.
-     */
-    private final SimpleHeimdallServer server;
+  /**
+   * The underlying server.
+   */
+  private final SimpleHeimdallServer server;
 
-    /**
-     * Create a new initializer based on a server.
-     *
-     * @param server The server.
-     */
-    public ServerChannelInitializer(SimpleHeimdallServer server) {
-        this.server = server;
-    }
+  /**
+   * Create a new initializer based on a server.
+   *
+   * @param server The server.
+   */
+  public ServerChannelInitializer(SimpleHeimdallServer server) {
+    this.server = server;
+  }
 
-    @Override
-    public void initChannel(Channel channel) throws Exception {
-        ChannelPipeline pipeline = channel.pipeline();
+  @Override
+  public void initChannel(Channel channel) throws Exception {
+    ChannelPipeline pipeline = channel.pipeline();
 
-        ChannelHandler lengthFieldBasedFrameDecoder = NettyUtils
-                .createLengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4);
-        pipeline.addLast(lengthFieldBasedFrameDecoder);
+    ChannelHandler lengthFieldBasedFrameDecoder = NettyUtils
+      .createLengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4);
+    pipeline.addLast(lengthFieldBasedFrameDecoder);
 
-        ChannelHandler jsonDecoder = new JSONPacketDecoder();
-        pipeline.addLast(jsonDecoder);
+    ChannelHandler jsonDecoder = new JSONPacketDecoder();
+    pipeline.addLast(jsonDecoder);
 
-        ChannelHandler lengthFieldPrepender = NettyUtils.createLengthFieldPrepender(4);
-        pipeline.addLast(lengthFieldPrepender);
+    ChannelHandler lengthFieldPrepender = NettyUtils.createLengthFieldPrepender(4);
+    pipeline.addLast(lengthFieldPrepender);
 
-        ChannelHandler jsonEncoder = new JSONPacketEncoder();
-        pipeline.addLast(jsonEncoder);
+    ChannelHandler jsonEncoder = new JSONPacketEncoder();
+    pipeline.addLast(jsonEncoder);
 
-        ChannelHandler channelHandler = new HeimdallConnection(server, channel);
-        pipeline.addLast(channelHandler);
-    }
+    ChannelHandler channelHandler = new HeimdallConnection(server, channel);
+    pipeline.addLast(channelHandler);
+  }
 }

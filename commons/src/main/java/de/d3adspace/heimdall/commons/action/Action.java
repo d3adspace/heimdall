@@ -25,22 +25,22 @@ package de.d3adspace.heimdall.commons.action;
  * @author Felix Klauke <info@felix-klauke.de>
  */
 public enum Action {
-    SUBSCRIBE(0),
-    UNSUBSCRIBE(1),
-    BROADCAST(2),
-    REQUEST(3);
+  SUBSCRIBE(0),
+  UNSUBSCRIBE(1),
+  BROADCAST(2),
+  REQUEST(3);
 
-    private final int actionId;
+  private final int actionId;
 
-    Action(int actionId) {
-        this.actionId = actionId;
-    }
+  Action(int actionId) {
+    this.actionId = actionId;
+  }
 
-    public static Action getAction(int actionId) {
-        return Action.values()[actionId];
-    }
+  public static Action getAction(int actionId) {
+    return Action.values()[actionId];
+  }
 
-    public int getActionId() {
-        return actionId;
-    }
+  public int getActionId() {
+    return actionId;
+  }
 }

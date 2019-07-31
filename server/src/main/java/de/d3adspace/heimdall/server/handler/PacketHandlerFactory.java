@@ -30,14 +30,14 @@ import de.d3adspace.heimdall.server.subscription.SubscriptionContainer;
  */
 public class PacketHandlerFactory {
 
-    /**
-     * Create a new packet handler.
-     *
-     * @return The packet handler.
-     */
-    public static PacketHandler createPacketHandler() {
-        SubscriptionContainer subscriptionContainer = new SubscriptionContainer();
+  /**
+   * Create a new packet handler.
+   *
+   * @return The packet handler.
+   */
+  public static PacketHandler createPacketHandler() {
+    SubscriptionContainer subscriptionContainer = new SubscriptionContainer();
 
-        return new SimplePacketHandler(subscriptionContainer);
-    }
+    return new SimplePacketHandler(subscriptionContainer);
+  }
 }

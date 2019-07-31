@@ -25,11 +25,10 @@ import de.d3adspace.heimdall.client.SimpleHeimdallClient;
 import de.d3adspace.heimdall.commons.utils.NettyUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import java.io.IOException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * Representing a connection.
@@ -38,43 +37,43 @@ import java.io.IOException;
  */
 public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> {
 
-    /**
-     * The underlying client.
-     */
-    private final SimpleHeimdallClient client;
+  /**
+   * The underlying client.
+   */
+  private final SimpleHeimdallClient client;
 
-    /**
-     * Logger for the connection.
-     */
-    private final Logger logger;
+  /**
+   * Logger for the connection.
+   */
+  private final Logger logger;
 
-    /**
-     * Create a new connection based on a client.
-     *
-     * @param client The client.
-     */
-    public HeimdallConnection(SimpleHeimdallClient client) {
-        this.client = client;
-        this.logger = LoggerFactory.getLogger(HeimdallConnection.class);
+  /**
+   * Create a new connection based on a client.
+   *
+   * @param client The client.
+   */
+  public HeimdallConnection(SimpleHeimdallClient client) {
+    this.client = client;
+    this.logger = LoggerFactory.getLogger(HeimdallConnection.class);
+  }
+
+  @Override
+  protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject) {
+    client.handlePacket(jsonObject);
+  }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    if (cause instanceof IOException) {
+      NettyUtils.closeWhenFlushed(ctx.channel());
+      return;
     }
 
-    @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject) {
-        client.handlePacket(jsonObject);
-    }
+    cause.printStackTrace();
+  }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        if (cause instanceof IOException) {
-            NettyUtils.closeWhenFlushed(ctx.channel());
-            return;
-        }
-
-        cause.printStackTrace();
-    }
-
-    @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        logger.info("Lost connection to the server.");
-    }
+  @Override
+  public void channelInactive(ChannelHandlerContext ctx) {
+    logger.info("Lost connection to the server.");
+  }
 }

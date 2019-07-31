@@ -29,5 +29,5 @@ import org.json.JSONObject;
  */
 public interface PacketHandler {
 
-    void handlePacket(HeimdallConnection connection, JSONObject jsonObject);
+  void handlePacket(HeimdallConnection connection, JSONObject jsonObject);
 }

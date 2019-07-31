@@ -25,14 +25,13 @@ import de.d3adspace.heimdall.client.SimpleHeimdallClient;
 import de.d3adspace.heimdall.client.annotation.Channel;
 import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The handler of all subscriptions.
@@ -41,108 +40,108 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class SubscriptionHandler {
 
-    /**
-     * The underlying Map of all packet handlers and their channels.
-     */
-    private final Map<String, List<PacketHandler>> packetHandlers;
+  /**
+   * The underlying Map of all packet handlers and their channels.
+   */
+  private final Map<String, List<PacketHandler>> packetHandlers;
 
-    /**
-     * The client to handle subscriptions for.
-     */
-    private final SimpleHeimdallClient client;
+  /**
+   * The client to handle subscriptions for.
+   */
+  private final SimpleHeimdallClient client;
 
-    /**
-     * The Logger for the subscription handler.
-     */
-    private final Logger logger;
+  /**
+   * The Logger for the subscription handler.
+   */
+  private final Logger logger;
 
-    /**
-     * Create a new subscription handler.
-     *
-     * @param client The client.
-     */
-    public SubscriptionHandler(SimpleHeimdallClient client) {
-        this.client = client;
-        this.packetHandlers = new ConcurrentHashMap<>();
-        this.logger = LoggerFactory.getLogger(SubscriptionHandler.class);
+  /**
+   * Create a new subscription handler.
+   *
+   * @param client The client.
+   */
+  public SubscriptionHandler(SimpleHeimdallClient client) {
+    this.client = client;
+    this.packetHandlers = new ConcurrentHashMap<>();
+    this.logger = LoggerFactory.getLogger(SubscriptionHandler.class);
+  }
+
+  /**
+   * Handle an incoming packet.
+   *
+   * @param channelName The channel
+   * @param jsonObject The packet.
+   */
+  public void handlePacket(String channelName, JSONObject jsonObject) {
+    List<PacketHandler> packetHandlers = this.packetHandlers.get(channelName);
+
+    if (packetHandlers == null) {
+      return;
     }
 
-    /**
-     * Handle an incoming packet.
-     *
-     * @param channelName The channel
-     * @param jsonObject  The packet.
-     */
-    public void handlePacket(String channelName, JSONObject jsonObject) {
-        List<PacketHandler> packetHandlers = this.packetHandlers.get(channelName);
+    packetHandlers.forEach(packetHandler -> packetHandler.handlePacket(jsonObject));
+  }
 
-        if (packetHandlers == null) {
-            return;
-        }
+  /**
+   * Register a new packet handler.
+   *
+   * @param packetHandler The handler.
+   */
+  public void registerPacketHandler(PacketHandler packetHandler) {
+    Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
 
-        packetHandlers.forEach(packetHandler -> packetHandler.handlePacket(jsonObject));
+    String channelName = channel.value();
+
+    logger.info("Subscribing to channel {}", channelName);
+
+    if (!packetHandlers.containsKey(channelName)) {
+      packetHandlers.put(channelName, new CopyOnWriteArrayList<>());
+
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.SUBSCRIBE.getActionId());
+      jsonObject.put("channelName", channelName);
+
+      client.publish(channelName, jsonObject);
     }
 
-    /**
-     * Register a new packet handler.
-     *
-     * @param packetHandler The handler.
-     */
-    public void registerPacketHandler(PacketHandler packetHandler) {
-        Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
+    packetHandlers.get(channelName).add(packetHandler);
+  }
 
-        String channelName = channel.value();
+  /**
+   * Unregister a packet handler.
+   *
+   * @param packetHandler The handler.
+   */
+  public void unregisterPacketHandler(PacketHandler packetHandler) {
+    Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
 
-        logger.info("Subscribing to channel {}", channelName);
+    logger.info("Unsubscribing from {}", channel.value());
 
-        if (!packetHandlers.containsKey(channelName)) {
-            packetHandlers.put(channelName, new CopyOnWriteArrayList<>());
+    packetHandlers.get(channel.value()).remove(packetHandler);
 
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.SUBSCRIBE.getActionId());
-            jsonObject.put("channelName", channelName);
+    if (packetHandlers.get(channel.value()).isEmpty()) {
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
+      jsonObject.put("channelName", channel.value());
 
-            client.publish(channelName, jsonObject);
-        }
+      client.publish(channel.value(), jsonObject);
 
-        packetHandlers.get(channelName).add(packetHandler);
+      packetHandlers.remove(channel.value());
     }
+  }
 
-    /**
-     * Unregister a packet handler.
-     *
-     * @param packetHandler The handler.
-     */
-    public void unregisterPacketHandler(PacketHandler packetHandler) {
-        Channel channel = packetHandler.getClass().getAnnotation(Channel.class);
+  /**
+   * Unregister all known packet handlers.
+   */
+  public void unregisterPacketHandlers() {
+    packetHandlers.keySet().forEach(channelName -> {
+      logger.info("Unsubscribing from {}", channelName);
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
+      jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
+      client.publish(channelName, jsonObject);
+    });
 
-        logger.info("Unsubscribing from {}", channel.value());
-
-        packetHandlers.get(channel.value()).remove(packetHandler);
-
-        if (packetHandlers.get(channel.value()).isEmpty()) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
-            jsonObject.put("channelName", channel.value());
-
-            client.publish(channel.value(), jsonObject);
-
-            packetHandlers.remove(channel.value());
-        }
-    }
-
-    /**
-     * Unregister all known packet handlers.
-     */
-    public void unregisterPacketHandlers() {
-        packetHandlers.keySet().forEach(channelName -> {
-            logger.info("Unsubscribing from {}", channelName);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put(HeimdallMessageFields.MESSAGE_ACTION_CODE, Action.UNSUBSCRIBE.getActionId());
-            jsonObject.put(HeimdallMessageFields.MESSAGE_CHANNEL_NAME, channelName);
-            client.publish(channelName, jsonObject);
-        });
-
-        packetHandlers.clear();
-    }
+    packetHandlers.clear();
+  }
 }

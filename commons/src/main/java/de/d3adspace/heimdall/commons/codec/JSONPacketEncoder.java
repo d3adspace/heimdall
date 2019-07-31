@@ -25,20 +25,19 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 import io.netty.util.CharsetUtil;
-import org.json.JSONObject;
-
 import java.nio.CharBuffer;
 import java.util.List;
+import org.json.JSONObject;
 
 /**
  * @author Felix Klauke <info@felix-klauke.de>
  */
 public class JSONPacketEncoder extends MessageToMessageEncoder<JSONObject> {
 
-    protected void encode(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject,
-                          List<Object> list) throws Exception {
-        final Object encodedObject = ByteBufUtil.encodeString(channelHandlerContext.alloc(),
-                CharBuffer.wrap(jsonObject.toString()), CharsetUtil.UTF_8);
-        list.add(encodedObject);
-    }
+  protected void encode(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject,
+    List<Object> list) throws Exception {
+    final Object encodedObject = ByteBufUtil.encodeString(channelHandlerContext.alloc(),
+      CharBuffer.wrap(jsonObject.toString()), CharsetUtil.UTF_8);
+    list.add(encodedObject);
+  }
 }

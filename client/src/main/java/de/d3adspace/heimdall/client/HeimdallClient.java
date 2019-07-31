@@ -31,31 +31,31 @@ import org.json.JSONObject;
  */
 public interface HeimdallClient {
 
-    /**
-     * Connect to the server.
-     */
-    void connect();
+  /**
+   * Connect to the server.
+   */
+  void connect();
 
-    /**
-     * Disconnect from the server.
-     */
-    void disconnect();
+  /**
+   * Disconnect from the server.
+   */
+  void disconnect();
 
-    /**
-     * Add a new subscriber.
-     */
-    void subscribe(PacketHandler packetHandler);
+  /**
+   * Add a new subscriber.
+   */
+  void subscribe(PacketHandler packetHandler);
 
-    /**
-     * Remove a subscription.
-     */
-    void unsubscribe(PacketHandler packetHandler);
+  /**
+   * Remove a subscription.
+   */
+  void unsubscribe(PacketHandler packetHandler);
 
-    /**
-     * Publish an object to the network.
-     *
-     * @param channelName The channel name.
-     * @param jsonObject  The object.
-     */
-    void publish(String channelName, JSONObject jsonObject);
+  /**
+   * Publish an object to the network.
+   *
+   * @param channelName The channel name.
+   * @param jsonObject The object.
+   */
+  void publish(String channelName, JSONObject jsonObject);
 }

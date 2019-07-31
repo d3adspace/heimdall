@@ -31,13 +31,13 @@ import de.d3adspace.heimdall.server.config.HeimdallServerConfigBuilder;
  */
 public class HeimdallServerExample {
 
-    public static void main(String[] args) {
-        HeimdallServerConfig config = new HeimdallServerConfigBuilder()
-                .setServerHost("localhost")
-                .setServerPort(1337)
-                .createHeimdallServerConfig();
+  public static void main(String[] args) {
+    HeimdallServerConfig config = new HeimdallServerConfigBuilder()
+      .setServerHost("localhost")
+      .setServerPort(1337)
+      .createHeimdallServerConfig();
 
-        HeimdallServer heimdallServer = HeimdallServerFactory.createHeimdallServer(config);
-        heimdallServer.start();
-    }
+    HeimdallServer heimdallServer = HeimdallServerFactory.createHeimdallServer(config);
+    heimdallServer.start();
+  }
 }

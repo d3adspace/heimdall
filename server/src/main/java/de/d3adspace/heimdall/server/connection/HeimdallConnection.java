@@ -26,10 +26,9 @@ import de.d3adspace.heimdall.server.SimpleHeimdallServer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.SocketAddress;
+import org.json.JSONObject;
 
 /**
  * Representing a connection of a client to the server.
@@ -38,59 +37,59 @@ import java.net.SocketAddress;
  */
 public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> {
 
-    /**
-     * The server this connection belongs to.
-     */
-    private final SimpleHeimdallServer server;
+  /**
+   * The server this connection belongs to.
+   */
+  private final SimpleHeimdallServer server;
 
-    /**
-     * The channel to the client.
-     */
-    private final Channel channel;
+  /**
+   * The channel to the client.
+   */
+  private final Channel channel;
 
-    /**
-     * Create a new connection by a channel and its endpoint.
-     *
-     * @param server  The server.
-     * @param channel The channel.
-     */
-    public HeimdallConnection(SimpleHeimdallServer server, Channel channel) {
-        this.server = server;
-        this.channel = channel;
+  /**
+   * Create a new connection by a channel and its endpoint.
+   *
+   * @param server The server.
+   * @param channel The channel.
+   */
+  public HeimdallConnection(SimpleHeimdallServer server, Channel channel) {
+    this.server = server;
+    this.channel = channel;
+  }
+
+  protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject)
+    throws Exception {
+    System.out.println("Received: " + jsonObject);
+
+    this.server.handlePacket(this, jsonObject);
+  }
+
+  @Override
+  public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    if (cause instanceof IOException) {
+      NettyUtils.closeWhenFlushed(ctx.channel());
+      return;
     }
 
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject)
-            throws Exception {
-        System.out.println("Received: " + jsonObject);
+    cause.printStackTrace();
+  }
 
-        this.server.handlePacket(this, jsonObject);
-    }
+  /**
+   * Send a packet to the client.
+   *
+   * @param jsonObject The object.
+   */
+  public void sendPacket(JSONObject jsonObject) {
+    this.channel.writeAndFlush(jsonObject);
+  }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (cause instanceof IOException) {
-            NettyUtils.closeWhenFlushed(ctx.channel());
-            return;
-        }
-
-        cause.printStackTrace();
-    }
-
-    /**
-     * Send a packet to the client.
-     *
-     * @param jsonObject The object.
-     */
-    public void sendPacket(JSONObject jsonObject) {
-        this.channel.writeAndFlush(jsonObject);
-    }
-
-    /**
-     * Get the socket address of the client.
-     *
-     * @return The remote address.
-     */
-    public SocketAddress getRemoteAdress() {
-        return this.channel.remoteAddress();
-    }
+  /**
+   * Get the socket address of the client.
+   *
+   * @return The remote address.
+   */
+  public SocketAddress getRemoteAdress() {
+    return this.channel.remoteAddress();
+  }
 }
