@@ -22,12 +22,13 @@
 package de.d3adspace.heimdall.server.subscription;
 
 import de.d3adspace.heimdall.server.connection.HeimdallConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The container for all subscriptions.
@@ -67,7 +68,7 @@ public class SubscriptionContainer {
    * Add a new subscription.
    *
    * @param channelName The channel name.
-   * @param connection The connection.
+   * @param connection  The connection.
    */
   public void addSubscription(String channelName, HeimdallConnection connection) {
     this.logger.info("Got a new subscription on {} from {}.", channelName,
@@ -84,7 +85,7 @@ public class SubscriptionContainer {
    * Remove a subscriptions.
    *
    * @param channelName The channel name.
-   * @param connection The connection.
+   * @param connection  The connection.
    */
   public void removeSubscription(String channelName, HeimdallConnection connection) {
     this.logger.info("{} is unsubscribing from {}.", connection.getRemoteAdress(), channelName);

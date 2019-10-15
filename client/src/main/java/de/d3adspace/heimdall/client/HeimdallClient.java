@@ -55,7 +55,7 @@ public interface HeimdallClient {
    * Publish an object to the network.
    *
    * @param channelName The channel name.
-   * @param jsonObject The object.
+   * @param jsonObject  The object.
    */
   void publish(String channelName, JSONObject jsonObject);
 }
