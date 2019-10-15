@@ -28,9 +28,6 @@ import de.d3adspace.heimdall.client.config.HeimdallClientConfigBuilder;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public class HeimdallClientExample {
 
   public static void main(String[] args) {

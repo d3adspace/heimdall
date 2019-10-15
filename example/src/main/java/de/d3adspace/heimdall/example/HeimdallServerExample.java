@@ -26,9 +26,6 @@ import de.d3adspace.heimdall.server.HeimdallServerFactory;
 import de.d3adspace.heimdall.server.config.HeimdallServerConfig;
 import de.d3adspace.heimdall.server.config.HeimdallServerConfigBuilder;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public class HeimdallServerExample {
 
   public static void main(String[] args) {
