@@ -70,6 +70,36 @@
           <target>11</target>
         </configuration>
       </plugin>
+
+      <!-- Maven Source plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <id>attach-sources</id>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Maven JavaDocs plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.1.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+            <id>attach-javadocs</id>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
