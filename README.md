@@ -15,7 +15,7 @@ _Client:_
 <dependency>
     <groupId>de.d3adspace</groupId>
     <artifactId>heimdall-client</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -24,7 +24,7 @@ _Server:_
 <dependency>
     <groupId>de.d3adspace</groupId>
     <artifactId>heimdall-server</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ _Commons:_
 <dependency>
     <groupId>de.d3adspace</groupId>
     <artifactId>heimdall-commons</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
 
@@ -47,9 +47,6 @@ import de.d3adspace.heimdall.server.HeimdallServerFactory;
 import de.d3adspace.heimdall.server.config.HeimdallServerConfig;
 import de.d3adspace.heimdall.server.config.HeimdallServerConfigBuilder;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public class HeimdallServerExample {
 	
 	public static void main(String[] args) {
@@ -76,9 +73,6 @@ import de.d3adspace.heimdall.client.config.HeimdallClientConfigBuilder;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public class HeimdallClientExample {
 	
 	public static void main(String[] args) {
@@ -108,9 +102,6 @@ import de.d3adspace.heimdall.client.annotation.Channel;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 @Channel("cluster")
 public class PacketHandlerExample implements PacketHandler {
 	
