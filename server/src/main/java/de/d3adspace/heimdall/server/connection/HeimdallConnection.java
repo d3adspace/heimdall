@@ -26,9 +26,10 @@ import de.d3adspace.heimdall.server.SimpleHeimdallServer;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.SocketAddress;
-import org.json.JSONObject;
 
 /**
  * Representing a connection of a client to the server.
@@ -50,7 +51,7 @@ public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> 
   /**
    * Create a new connection by a channel and its endpoint.
    *
-   * @param server The server.
+   * @param server  The server.
    * @param channel The channel.
    */
   public HeimdallConnection(SimpleHeimdallServer server, Channel channel) {

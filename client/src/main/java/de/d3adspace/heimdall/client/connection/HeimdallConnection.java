@@ -25,10 +25,11 @@ import de.d3adspace.heimdall.client.SimpleHeimdallClient;
 import de.d3adspace.heimdall.commons.utils.NettyUtils;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import java.io.IOException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 /**
  * Representing a connection.

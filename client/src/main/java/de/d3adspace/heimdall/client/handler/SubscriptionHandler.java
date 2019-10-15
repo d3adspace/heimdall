@@ -25,13 +25,14 @@ import de.d3adspace.heimdall.client.SimpleHeimdallClient;
 import de.d3adspace.heimdall.client.annotation.Channel;
 import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The handler of all subscriptions.
@@ -70,7 +71,7 @@ public class SubscriptionHandler {
    * Handle an incoming packet.
    *
    * @param channelName The channel
-   * @param jsonObject The packet.
+   * @param jsonObject  The packet.
    */
   public void handlePacket(String channelName, JSONObject jsonObject) {
     List<PacketHandler> packetHandlers = this.packetHandlers.get(channelName);

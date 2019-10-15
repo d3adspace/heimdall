@@ -29,15 +29,12 @@ import de.d3adspace.heimdall.commons.HeimdallMessageFields;
 import de.d3adspace.heimdall.commons.action.Action;
 import de.d3adspace.heimdall.commons.utils.NettyUtils;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import java.util.concurrent.TimeUnit;
+import io.netty.channel.*;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Basic client implementation.

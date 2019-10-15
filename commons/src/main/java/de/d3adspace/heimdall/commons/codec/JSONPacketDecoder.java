@@ -25,8 +25,9 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.util.CharsetUtil;
-import java.util.List;
 import org.json.JSONObject;
+
+import java.util.List;
 
 /**
  * @author Felix Klauke <info@felix-klauke.de>
@@ -34,7 +35,7 @@ import org.json.JSONObject;
 public class JSONPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
   protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf,
-    List<Object> list) throws Exception {
+                        List<Object> list) throws Exception {
 
     byteBuf.readInt();
     final JSONObject jsonObject = new JSONObject(byteBuf.toString(CharsetUtil.UTF_8));
