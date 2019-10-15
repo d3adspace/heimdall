@@ -36,8 +36,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The handler of all subscriptions.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class SubscriptionHandler {
 

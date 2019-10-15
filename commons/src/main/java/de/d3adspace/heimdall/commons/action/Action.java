@@ -21,9 +21,6 @@
 
 package de.d3adspace.heimdall.commons.action;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public enum Action {
   SUBSCRIBE(0),
   UNSUBSCRIBE(1),

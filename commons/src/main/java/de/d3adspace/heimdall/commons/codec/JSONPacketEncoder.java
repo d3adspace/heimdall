@@ -30,9 +30,6 @@ import org.json.JSONObject;
 import java.nio.CharBuffer;
 import java.util.List;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public class JSONPacketEncoder extends MessageToMessageEncoder<JSONObject> {
 
   protected void encode(ChannelHandlerContext channelHandlerContext, JSONObject jsonObject,

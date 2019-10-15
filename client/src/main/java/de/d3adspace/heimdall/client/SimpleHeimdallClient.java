@@ -38,8 +38,6 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Basic client implementation.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class SimpleHeimdallClient implements HeimdallClient {
 

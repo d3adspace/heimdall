@@ -25,8 +25,6 @@ import de.d3adspace.heimdall.server.subscription.SubscriptionContainer;
 
 /**
  * Factory for the packet handlers.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class PacketHandlerFactory {
 

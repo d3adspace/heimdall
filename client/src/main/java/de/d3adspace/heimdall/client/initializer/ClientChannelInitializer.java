@@ -33,8 +33,6 @@ import io.netty.channel.ChannelPipeline;
 
 /**
  * Initializer for the pipeline.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class ClientChannelInitializer extends ChannelInitializer<Channel> {
 

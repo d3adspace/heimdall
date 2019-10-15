@@ -25,9 +25,6 @@ import de.d3adspace.heimdall.client.annotation.Channel;
 import de.d3adspace.heimdall.client.handler.PacketHandler;
 import org.json.JSONObject;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 @Channel("cluster")
 public class PacketHandlerExample implements PacketHandler {
 

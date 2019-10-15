@@ -32,8 +32,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The container for all subscriptions.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class SubscriptionContainer {
 

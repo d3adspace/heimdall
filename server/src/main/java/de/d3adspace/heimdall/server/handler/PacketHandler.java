@@ -24,9 +24,6 @@ package de.d3adspace.heimdall.server.handler;
 import de.d3adspace.heimdall.server.connection.HeimdallConnection;
 import org.json.JSONObject;
 
-/**
- * @author Felix Klauke <info@felix-klauke.de>
- */
 public interface PacketHandler {
 
   void handlePacket(HeimdallConnection connection, JSONObject jsonObject);

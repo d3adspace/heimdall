@@ -23,8 +23,6 @@ package de.d3adspace.heimdall.server.config;
 
 /**
  * Basic config for a server.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallServerConfig {
 

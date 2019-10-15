@@ -25,8 +25,6 @@ import org.json.JSONObject;
 
 /**
  * Interface for packet handlers.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public interface PacketHandler {
 

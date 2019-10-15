@@ -33,8 +33,6 @@ import java.io.IOException;
 
 /**
  * Representing a connection.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 public class HeimdallConnection extends SimpleChannelInboundHandler<JSONObject> {
 

@@ -28,8 +28,6 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to indicate which channel to listen for.
- *
- * @author Felix Klauke <info@felix-klauke.de>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

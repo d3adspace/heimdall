@@ -34,9 +34,6 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.internal.PlatformDependent;
 
-/**
- * @author Nathalie0hneHerz
- */
 public class NettyUtils {
 
   private static final boolean EPOLL = !PlatformDependent.isWindows() && Epoll.isAvailable();
